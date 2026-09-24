@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 import { Hono } from "hono";
+import { packageName, packageVersion } from "../src/meta.ts";
 import { mcpRoute } from "../src/mcp.ts";
 import { MAX_REQUEST_BODY_BYTES, MAX_SVG_BYTES } from "../src/validation.ts";
 
@@ -19,6 +20,7 @@ Deno.test("live MCP server converts SVG and rejects invalid requests", async () 
 
   try {
     await client.connect(new StreamableHTTPClientTransport(url));
+    assert.deepEqual(client.getServerVersion(), { name: packageName, version: packageVersion });
     const tools = await client.listTools();
     assert(tools.tools.some((tool) => tool.name === "convert_svg_to_swiftui"));
 

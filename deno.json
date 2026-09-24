@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "exports": "./src/index.ts",
   "publish": {
-    "include": ["README.md", "LICENSE", "src/**/*.ts"]
+    "include": ["README.md", "LICENSE", "deno.json", "src/**/*.ts"]
   },
   "imports": {
     "@modelcontextprotocol/server": "npm:@modelcontextprotocol/server@2.1.0",

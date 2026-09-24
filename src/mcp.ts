@@ -1,12 +1,13 @@
 import { createMcpHonoApp } from "@modelcontextprotocol/hono";
 import { toStandardJsonSchema } from "@valibot/to-json-schema";
 import { createMcpHandler, McpServer } from "@modelcontextprotocol/server";
+import { packageName, packageVersion } from "./meta.ts";
 import { convertSvgTool } from "./tools/convert_svg_to_swiftui.ts";
 import { env, MAX_REQUEST_BODY_BYTES, toolInputSchema } from "./validation.ts";
 
 export function createMcpRoute() {
   const handler = createMcpHandler(() => {
-    const server = new McpServer({ name: "svg-to-swift-ui", version: "0.1.0" });
+    const server = new McpServer({ name: packageName, version: packageVersion });
     server.registerTool(
       "convert_svg_to_swiftui",
       {

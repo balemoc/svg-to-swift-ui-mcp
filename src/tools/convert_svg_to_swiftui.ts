@@ -3,13 +3,11 @@ import { convert } from "svg-to-swiftui-core";
 import * as v from "valibot";
 import { svgBytesSchema, type toolInputSchema } from "../validation.ts";
 
-type ConversionResult = CallToolResult & { isError: boolean };
-
 export function convertSvgTool(
   { svg, structName, precision, indentationSize, usageCommentPrefix }: v.InferOutput<
     typeof toolInputSchema
   >,
-): ConversionResult {
+): CallToolResult {
   try {
     v.parse(svgBytesSchema, svg);
     return {
