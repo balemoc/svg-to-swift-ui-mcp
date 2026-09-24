@@ -6,7 +6,7 @@ import { toolInputSchema } from "./tools/convert_svg_to_swiftui.schema.ts";
 import { convertSvgTool } from "./tools/convert_svg_to_swiftui.ts";
 import { env, MAX_REQUEST_BODY_BYTES } from "./validation.ts";
 
-export function createMcpRoute() {
+export function createMcpApp() {
   const handler = createMcpHandler(() => {
     const server = new McpServer({ name: packageName, version: packageVersion });
     server.registerTool(
@@ -25,7 +25,7 @@ export function createMcpRoute() {
     host: env.hostname,
     maxRequestBodySize: MAX_REQUEST_BODY_BYTES,
   });
-  app.all("/", (c) => {
+  app.all("/mcp", (c) => {
     // Hono has already checked the body limit and parsed it before the SDK handles the request.
     const parsedBody = (c as unknown as { get(key: "parsedBody"): unknown }).get("parsedBody");
     return handler.fetch(c.req.raw, { parsedBody });
@@ -33,4 +33,4 @@ export function createMcpRoute() {
   return app;
 }
 
-export const mcpRoute = createMcpRoute();
+export const mcpApp = createMcpApp();
