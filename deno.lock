@@ -1,0 +1,71 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:@modelcontextprotocol/hono@2.0.1": "2.0.1_@modelcontextprotocol+server@2.1.0_hono@4.13.9",
+    "npm:@modelcontextprotocol/server@2.1.0": "2.1.0",
+    "npm:@valibot/to-json-schema@1.8.0": "1.8.0_valibot@1.5.0",
+    "npm:hono@4.13.9": "4.13.9",
+    "npm:svg-to-swiftui-core@0.4.0": "0.4.0",
+    "npm:valibot@1.5.0": "1.5.0"
+  },
+  "npm": {
+    "@modelcontextprotocol/core@2.1.0": {
+      "integrity": "sha512-YdFj5gMRHr0gYNAhTbQDgjLHiEJdIAUYxomhKseUNye7ZGlISQmUoLh2sveFFCiQ7j2YMffT1kgSND0FSfIFjQ==",
+      "dependencies": [
+        "zod"
+      ]
+    },
+    "@modelcontextprotocol/hono@2.0.1_@modelcontextprotocol+server@2.1.0_hono@4.13.9": {
+      "integrity": "sha512-97wyjSblCn09ku3VrSVSINFBiDFl9kjM0HRJ/ZlWhSpPbqoKOdVoWCYwoLSCpMxRPDtZCAXX9NqTTXiCOExH1w==",
+      "dependencies": [
+        "@modelcontextprotocol/server",
+        "hono"
+      ]
+    },
+    "@modelcontextprotocol/server@2.1.0": {
+      "integrity": "sha512-FdvwZU5N03O77Suh35JqjAqq5R1ZTEPFtwu6N4BgBq28qrQtrCnpbLL5U2pwYCuE194jAw0xnlOVmIqhfoYuUQ==",
+      "dependencies": [
+        "@modelcontextprotocol/core",
+        "zod"
+      ]
+    },
+    "@valibot/to-json-schema@1.8.0_valibot@1.5.0": {
+      "integrity": "sha512-a0M+uwCuQZEPAo65NYkFSJ14O5c213KoSZmPdoCfuFvUhfULi4T2Z6Tpjv6lTVMW9RoLm74RpRAjNEa43KcN+g==",
+      "dependencies": [
+        "valibot"
+      ]
+    },
+    "hono@4.13.9": {
+      "integrity": "sha512-7dMkQmZoC4E6F7AtaQSPhlWAdnBti+j7rreMZl8QB4jFiEhP9TWbGWUMi8WYzBCgmgulxuvLQupKqo+Co6Omyg=="
+    },
+    "svg-parser@2.1.0": {
+      "integrity": "sha512-bwLf38YmY+TDYHJw1Ex0Co8c4yeXuJAo8YnXGZrscxrvYoVVIvLeniEkV1Ks/54VteMnL4FtyN1+P+TZJdUPmQ=="
+    },
+    "svg-pathdata@6.0.3": {
+      "integrity": "sha512-qsjeeq5YjBZ5eMdFuUa4ZosMLxgr5RZ+F+Y1OrDhuOCEInRMA3x74XdBtggJcj9kOeInz0WE+LgCPDkZFlBYJw=="
+    },
+    "svg-to-swiftui-core@0.4.0": {
+      "integrity": "sha512-Qw3h3O7rivLRrGSfOHKAnlNLJ/XJ5v/CEE+jA3hQYcp3vi53+5sj9iMHsjWYuiKIDuXLv2St4B9k8y9rKLHWcw==",
+      "dependencies": [
+        "svg-parser",
+        "svg-pathdata"
+      ]
+    },
+    "valibot@1.5.0": {
+      "integrity": "sha512-nil6AkP2TChWL43Z5uJ6GTxX01CUA+g8LWUM+N/rB9NBbkUMaUsi9PUNzlUPgoKASgmx9f7eGOYpJ04/fSa6FQ=="
+    },
+    "zod@4.2.0": {
+      "integrity": "sha512-Bd5fw9wlIhtqCCxotZgdTOMwGm1a0u75wARVEY9HMs1X17trvA/lMi4+MGK5EUfYkXVTbX8UDiDKW4OgzHVUZw=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:@modelcontextprotocol/hono@2.0.1",
+      "npm:@modelcontextprotocol/server@2.1.0",
+      "npm:@valibot/to-json-schema@1.8.0",
+      "npm:hono@4.13.9",
+      "npm:svg-to-swiftui-core@0.4.0",
+      "npm:valibot@1.5.0"
+    ]
+  }
+}
