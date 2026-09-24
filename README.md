@@ -1,24 +1,42 @@
 # SVG to SwiftUI MCP
 
-Local Streamable HTTP MCP server built with Deno and Hono. One tool, `convert_svg_to_swiftui`,
-accepts complete inline SVG and optional `structName`, `precision`, `indentationSize`, and
-`usageCommentPrefix` options, returning SwiftUI source as text. It uses the published
-`svg-to-swiftui-core@0.4.0` package (a Shape converter); features documented on the upstream
-repository's current `main` branch are not necessarily in that release.
+A local [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that converts
+complete inline SVG markup into SwiftUI `Shape` source. It exposes one tool,
+`convert_svg_to_swiftui`, over Streamable HTTP. The converter is the published
+[`svg-to-swiftui-core@0.4.0`](https://www.npmjs.com/package/svg-to-swiftui-core/v/0.4.0) package;
+features described on that project's current `main` branch may not be available in this release.
 
-## Run
+## Getting started
+
+Install [mise](https://mise.jdx.dev/) and, from the repository root, run:
 
 ```sh
 mise install
 mise exec -- deno task start
-# Or choose another loopback port:
+```
+
+`mise.toml` pins Deno 2.7.14. On first run, Deno needs access to the npm registry to fill its
+package cache. The server listens at `http://127.0.0.1:8000/mcp` by default. Configure a Streamable
+HTTP MCP client to connect to that URL. To use another loopback port:
+
+```sh
 PORT=8787 mise exec -- deno task start
 ```
 
-Connect an HTTP MCP client to `http://127.0.0.1:8000/mcp` (or the chosen `PORT`). The server rejects
-ports outside 1–65535 or non-integer values. It binds to loopback only. If your client runs on
-another machine, use a secure authenticated tunnel; do not expose this service directly to the
-internet.
+`PORT` must be an integer from 1 to 65535.
+
+## Tool: `convert_svg_to_swiftui`
+
+Pass complete SVG markup, including the `<svg>` root. The tool returns generated SwiftUI source as
+text; invalid options or conversion failures produce an MCP tool error.
+
+| Argument             | Required | Description                                                                                                               |
+| -------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `svg`                | Yes      | Nonempty inline SVG markup, up to 256 KiB encoded as UTF-8.                                                               |
+| `structName`         | No       | Generated Swift type name; defaults to `MyCustomShape`. Must match `[A-Za-z_][A-Za-z0-9_]*` and be at most 64 characters. |
+| `precision`          | No       | Integer decimal precision, 0–100; otherwise uses the converter default.                                                   |
+| `indentationSize`    | No       | Integer spaces per indentation level, 0–32; otherwise uses the converter default.                                         |
+| `usageCommentPrefix` | No       | Boolean controlling whether a SwiftUI usage comment precedes the generated Shape; otherwise uses the converter default.   |
 
 Example tool arguments:
 
@@ -32,20 +50,38 @@ Example tool arguments:
 }
 ```
 
-Omit optional settings to use the converter's defaults. `precision` accepts integers from 0 to 100
-(the JavaScript `toFixed` range); `indentationSize` accepts integers from 0 to 32 to bound output
-size.
+Omit optional arguments to use their defaults. The result contains a SwiftUI `Shape` definition, not
+a rendered image or a SwiftUI `View`.
 
-Requests are limited to 300 KiB, SVG input to 256 KiB, and generated output to 1 MiB. The tool
-accepts inline SVG only: it does not read local files or fetch external URLs. Deno is granted only
-loopback network access and permission to read only `PORT` from the environment.
+## Architecture and limits
 
-## Develop
+- `src/index.ts` validates the port and binds the Hono server to `127.0.0.1`.
+- `src/mcp.ts` registers the tool, validates its arguments, and serves the MCP transport at `/mcp`.
+- `src/convert.ts` checks SVG input size and calls `svg-to-swiftui-core`.
+- `tests/server_test.ts` exercises conversion, MCP initialization and tool calls, input validation,
+  and request security checks.
+
+HTTP request bodies are limited to 300 KiB and SVG input to 256 KiB. Generated SwiftUI output is not
+size-limited. The tool accepts inline SVG only: it does not accept file paths or URL inputs. The
+start task grants Deno loopback network access and permission to read only the `PORT` environment
+variable.
+
+This is a **local-only service**. If your MCP client is on another machine, use a secure
+authenticated tunnel rather than exposing the server directly to the internet.
+
+## Development
+
+Direct dependencies are pinned in `deno.json`, with the resolved graph in `deno.lock`. Run the
+checks before submitting changes:
 
 ```sh
-mise exec -- deno task check
-mise exec -- deno task test
+mise exec -- deno task check  # type-check, format check, lint
+mise exec -- deno task test   # Deno tests
 ```
 
-`mise.toml` pins the Deno runtime; `deno.json` pins direct dependencies and `deno.lock` pins their
-resolved graph. The first run needs access to the npm registry to populate Deno's package cache.
+When changing tool behavior, update the tests in `tests/` and keep the argument schema in
+`src/mcp.ts` consistent with the converter options.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
