@@ -28,11 +28,34 @@ export async function createMcpRoute() {
           ),
           "MyCustomShape",
         ),
+        precision: v.optional(v.pipe(
+          v.number(),
+          v.integer(),
+          v.minValue(0),
+          v.maxValue(100),
+          v.description("Decimal places for path coordinates (0–100); omit for library default"),
+        )),
+        indentationSize: v.optional(v.pipe(
+          v.number(),
+          v.integer(),
+          v.minValue(0),
+          v.maxValue(32),
+          v.description("Spaces per indentation level (0–32); omit for library default"),
+        )),
+        usageCommentPrefix: v.optional(v.pipe(
+          v.boolean(),
+          v.description("Include a SwiftUI usage comment before the generated Shape"),
+        )),
       })),
     },
-    ({ svg, structName }) => {
+    ({ svg, structName, precision, indentationSize, usageCommentPrefix }) => {
       try {
-        return { content: [{ type: "text" as const, text: convertSvg(svg, structName) }] };
+        return {
+          content: [{
+            type: "text" as const,
+            text: convertSvg(svg, { structName, precision, indentationSize, usageCommentPrefix }),
+          }],
+        };
       } catch (error) {
         return {
           isError: true,

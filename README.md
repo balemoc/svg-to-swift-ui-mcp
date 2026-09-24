@@ -1,9 +1,10 @@
 # SVG to SwiftUI MCP
 
 Local Streamable HTTP MCP server built with Deno and Hono. One tool, `convert_svg_to_swiftui`,
-accepts complete inline SVG and an optional `structName`, returning SwiftUI source as text. It uses
-the published `svg-to-swiftui-core@0.4.0` package (a Shape converter); features documented on the
-upstream repository's current `main` branch are not necessarily in that release.
+accepts complete inline SVG and optional `structName`, `precision`, `indentationSize`, and
+`usageCommentPrefix` options, returning SwiftUI source as text. It uses the published
+`svg-to-swiftui-core@0.4.0` package (a Shape converter); features documented on the upstream
+repository's current `main` branch are not necessarily in that release.
 
 ## Run
 
@@ -24,9 +25,16 @@ Example tool arguments:
 ```json
 {
   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 10 10\"><circle cx=\"5\" cy=\"5\" r=\"4\"/></svg>",
-  "structName": "CircleIcon"
+  "structName": "CircleIcon",
+  "precision": 8,
+  "indentationSize": 4,
+  "usageCommentPrefix": false
 }
 ```
+
+Omit optional settings to use the converter's defaults. `precision` accepts integers from 0 to 100
+(the JavaScript `toFixed` range); `indentationSize` accepts integers from 0 to 32 to bound output
+size.
 
 Requests are limited to 300 KiB, SVG input to 256 KiB, and generated output to 1 MiB. The tool
 accepts inline SVG only: it does not read local files or fetch external URLs. Deno is granted only
