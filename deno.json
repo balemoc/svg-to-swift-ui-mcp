@@ -10,7 +10,7 @@
   "tasks": {
     "start": "deno run --allow-net=127.0.0.1 --allow-env=PORT src/index.ts",
     "check": "deno check src/index.ts tests/ && deno fmt --check && deno lint",
-    "test": "deno test --allow-run --allow-net=127.0.0.1 tests/"
+    "test": "deno test tests/"
   },
   "fmt": {
     "lineWidth": 100
