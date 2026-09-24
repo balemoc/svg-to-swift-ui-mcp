@@ -1,15 +1,15 @@
 import assert from "node:assert/strict";
 import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 import { Hono } from "hono";
-import { createMcpRoute } from "../src/mcp.ts";
-import { MAX_REQUEST_BODY_BYTES } from "../src/validation.ts";
+import { mcpRoute } from "../src/mcp.ts";
+import { MAX_REQUEST_BODY_BYTES, MAX_SVG_BYTES } from "../src/validation.ts";
 
 const svg =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4"/></svg>';
 
 Deno.test("live MCP server converts SVG and rejects invalid requests", async () => {
   const app = new Hono();
-  app.route("/mcp", createMcpRoute());
+  app.route("/mcp", mcpRoute);
   const server = Deno.serve({ hostname: "127.0.0.1", port: 0, onListen: () => {} }, app.fetch);
   const url = new URL(`http://127.0.0.1:${(server.addr as Deno.NetAddr).port}/mcp`);
   const client = new Client(
@@ -26,7 +26,7 @@ Deno.test("live MCP server converts SVG and rejects invalid requests", async () 
       name: "convert_svg_to_swiftui",
       arguments: { svg, structName: "CircleIcon" },
     });
-    assert.equal(converted.isError, undefined);
+    assert.equal(converted.isError, false);
     assert(
       converted.content.some((item) =>
         item.type === "text" && item.text.includes("struct CircleIcon: Shape")
@@ -56,6 +56,17 @@ Deno.test("live MCP server converts SVG and rejects invalid requests", async () 
       });
       assert.equal(invalid.isError, true);
     }
+
+    const oversizedSvg = await client.callTool({
+      name: "convert_svg_to_swiftui",
+      arguments: { svg: "é".repeat(MAX_SVG_BYTES / 2 + 1) },
+    });
+    assert.equal(oversizedSvg.isError, true);
+    assert(
+      oversizedSvg.content.some((item) =>
+        item.type === "text" && item.text.includes("SVG must not exceed")
+      ),
+    );
 
     const tooLarge = await fetch(url, {
       method: "POST",

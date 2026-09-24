@@ -18,23 +18,23 @@ mise exec -- deno task start
 `mise.toml` pins Deno 2.7.14. On first run, Deno needs access to the npm registry to fill its
 package cache. The server listens at `http://127.0.0.1:8000/mcp` by default. Configure a Streamable
 HTTP MCP client to connect to that URL. Clients using the 2026-07-28 protocol discover the server
-with `server/discover`; older clients can use the legacy `initialize` handshake. To use another
-loopback port:
+with `server/discover`; older clients can use the legacy `initialize` handshake. Set either `HOST`
+or `PORT` to change the bind address (the omitted value keeps its default):
 
 ```sh
-PORT=8787 mise exec -- deno task start
+HOST=127.0.0.1 PORT=8787 mise exec -- deno task start
 ```
 
-`PORT` must be an integer from 1 to 65535.
+`HOST` must be nonempty with no whitespace; `PORT` must be an integer from 1 to 65535.
 
 To run the published JSR package with Deno instead of cloning the repository:
 
 ```sh
-deno run --allow-net=127.0.0.1 --allow-env=PORT jsr:@balemoc/svg-to-swift-ui-mcp@0.1.0
+deno run --allow-net --allow-env=HOST,PORT jsr:@balemoc/svg-to-swift-ui-mcp@0.1.0
 ```
 
-The endpoint and `PORT` behavior are the same. Deno must be installed, and the first run needs
-network access to download the package and its dependencies.
+The endpoint, `HOST`, and `PORT` behavior are the same. Deno must be installed, and the first run
+needs network access to download the package and its dependencies.
 
 ## Tool: `convert_svg_to_swiftui`
 
@@ -66,19 +66,20 @@ a rendered image or a SwiftUI `View`.
 
 ## Architecture and limits
 
-- `src/index.ts` validates the port and binds the Hono server to `127.0.0.1`.
+- `src/validation.ts` validates and defaults the bind address; `src/index.ts` starts the Hono
+  server.
 - `src/mcp.ts` registers the tool and serves modern and legacy MCP requests at `/mcp`.
-- `src/convert.ts` checks SVG input size and calls `svg-to-swiftui-core`.
+- `src/tools/convert_svg_to_swiftui.ts` checks SVG input size and calls `svg-to-swiftui-core`.
 - `tests/server_test.ts` calls the tool over a live loopback server and checks conversion, invalid
   input, and HTTP request protections.
 
 HTTP request bodies are limited to 300 KiB and SVG input to 256 KiB. Generated SwiftUI output is not
 size-limited. The tool accepts inline SVG only: it does not accept file paths or URL inputs. The
-start task grants Deno loopback network access and permission to read only the `PORT` environment
-variable.
+start task grants Deno network access and permission to read only the `HOST` and `PORT` environment
+variables.
 
-This is a **local-only service**. If your MCP client is on another machine, use a secure
-authenticated tunnel rather than exposing the server directly to the internet.
+By default this is a **local-only service**. Setting `HOST` to a non-loopback address exposes the
+unauthenticated endpoint to reachable networks; use a secure authenticated tunnel for remote access.
 
 ## Development
 

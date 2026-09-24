@@ -15,9 +15,9 @@
     "valibot": "npm:valibot@1.5.0"
   },
   "tasks": {
-    "start": "deno run --allow-net=127.0.0.1 --allow-env=PORT src/index.ts",
+    "start": "deno run --allow-net --allow-env=HOST,PORT src/index.ts",
     "check": "deno check src/index.ts tests/ && deno fmt --check && deno lint",
-    "test": "deno test --allow-net=127.0.0.1 tests/"
+    "test": "deno test --allow-net=127.0.0.1 --allow-env=HOST,PORT tests/"
   },
   "fmt": {
     "lineWidth": 100
