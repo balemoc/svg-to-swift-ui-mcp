@@ -25,9 +25,10 @@ or `PORT` to change the bind address (the omitted value keeps its default):
 HOST=127.0.0.1 PORT=8787 mise exec -- deno task start
 ```
 
-`HOST` must be nonempty with no whitespace; `PORT` must be an integer from 1 to 65535.
+`HOST` must be nonempty with no whitespace; `PORT` is parsed as a number and must resolve to an
+integer from 1 to 65535.
 
-To run the published JSR package with Deno instead of cloning the repository:
+Run the JSR package with Deno instead of cloning the repository:
 
 ```sh
 deno run --allow-net --allow-env=HOST,PORT jsr:@balemoc/svg-to-swift-ui-mcp@0.1.0
