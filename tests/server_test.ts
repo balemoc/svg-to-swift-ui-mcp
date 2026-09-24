@@ -3,7 +3,8 @@ import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/cli
 import { Hono } from "hono";
 import { packageName, packageVersion } from "../src/meta.ts";
 import { mcpRoute } from "../src/mcp.ts";
-import { MAX_REQUEST_BODY_BYTES, MAX_SVG_BYTES } from "../src/validation.ts";
+import { MAX_SVG_BYTES } from "../src/tools/convert_svg_to_swiftui.schema.ts";
+import { MAX_REQUEST_BODY_BYTES } from "../src/validation.ts";
 
 const svg =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4"/></svg>';

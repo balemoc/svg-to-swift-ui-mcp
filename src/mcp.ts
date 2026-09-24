@@ -2,8 +2,9 @@ import { createMcpHonoApp } from "@modelcontextprotocol/hono";
 import { toStandardJsonSchema } from "@valibot/to-json-schema";
 import { createMcpHandler, McpServer } from "@modelcontextprotocol/server";
 import { packageName, packageVersion } from "./meta.ts";
+import { toolInputSchema } from "./tools/convert_svg_to_swiftui.schema.ts";
 import { convertSvgTool } from "./tools/convert_svg_to_swiftui.ts";
-import { env, MAX_REQUEST_BODY_BYTES, toolInputSchema } from "./validation.ts";
+import { env, MAX_REQUEST_BODY_BYTES } from "./validation.ts";
 
 export function createMcpRoute() {
   const handler = createMcpHandler(() => {

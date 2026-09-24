@@ -1,7 +1,7 @@
 import type { CallToolResult } from "@modelcontextprotocol/server";
 import { convert } from "svg-to-swiftui-core";
 import * as v from "valibot";
-import { svgBytesSchema, type toolInputSchema } from "../validation.ts";
+import { svgBytesSchema, type toolInputSchema } from "./convert_svg_to_swiftui.schema.ts";
 
 export function convertSvgTool(
   { svg, structName, precision, indentationSize, usageCommentPrefix }: v.InferOutput<
