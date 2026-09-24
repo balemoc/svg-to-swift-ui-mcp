@@ -17,13 +17,24 @@ mise exec -- deno task start
 
 `mise.toml` pins Deno 2.7.14. On first run, Deno needs access to the npm registry to fill its
 package cache. The server listens at `http://127.0.0.1:8000/mcp` by default. Configure a Streamable
-HTTP MCP client to connect to that URL. To use another loopback port:
+HTTP MCP client to connect to that URL. Clients using the 2026-07-28 protocol discover the server
+with `server/discover`; older clients can use the legacy `initialize` handshake. To use another
+loopback port:
 
 ```sh
 PORT=8787 mise exec -- deno task start
 ```
 
 `PORT` must be an integer from 1 to 65535.
+
+To run the published JSR package with Deno instead of cloning the repository:
+
+```sh
+deno run --allow-net=127.0.0.1 --allow-env=PORT jsr:@balemoc/svg-to-swift-ui-mcp@0.1.0
+```
+
+The endpoint and `PORT` behavior are the same. Deno must be installed, and the first run needs
+network access to download the package and its dependencies.
 
 ## Tool: `convert_svg_to_swiftui`
 
@@ -56,10 +67,10 @@ a rendered image or a SwiftUI `View`.
 ## Architecture and limits
 
 - `src/index.ts` validates the port and binds the Hono server to `127.0.0.1`.
-- `src/mcp.ts` registers the tool, validates its arguments, and serves the MCP transport at `/mcp`.
+- `src/mcp.ts` registers the tool and serves modern and legacy MCP requests at `/mcp`.
 - `src/convert.ts` checks SVG input size and calls `svg-to-swiftui-core`.
-- `tests/server_test.ts` exercises conversion, MCP initialization and tool calls, input validation,
-  and request security checks.
+- `tests/server_test.ts` calls the tool over a live loopback server and checks conversion, invalid
+  input, and HTTP request protections.
 
 HTTP request bodies are limited to 300 KiB and SVG input to 256 KiB. Generated SwiftUI output is not
 size-limited. The tool accepts inline SVG only: it does not accept file paths or URL inputs. The
@@ -80,7 +91,16 @@ mise exec -- deno task test   # Deno tests
 ```
 
 When changing tool behavior, update the tests in `tests/` and keep the argument schema in
-`src/mcp.ts` consistent with the converter options.
+`src/validation.ts` consistent with the converter options.
+
+## Publishing
+
+The package is configured as `@balemoc/svg-to-swift-ui-mcp` in `deno.json`. Before the first
+release, create the package in the `@balemoc` scope on JSR and link it to this GitHub repository for
+[OIDC publishing](https://jsr.io/docs/publishing-packages#publishing-from-github-actions). The
+[publish workflow](.github/workflows/publish.yml) runs checks and a publish dry run before
+publishing on a pushed `v*` tag. The tag must match the `deno.json` version (for example, `v0.1.0`).
+Review locally with `mise exec -- deno publish --dry-run` before tagging.
 
 ## License
 

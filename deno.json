@@ -1,6 +1,13 @@
 {
+  "name": "@balemoc/svg-to-swift-ui-mcp",
+  "version": "0.1.0",
+  "exports": "./src/index.ts",
+  "publish": {
+    "include": ["README.md", "LICENSE", "src/**/*.ts"]
+  },
   "imports": {
     "@modelcontextprotocol/server": "npm:@modelcontextprotocol/server@2.1.0",
+    "@modelcontextprotocol/client": "npm:@modelcontextprotocol/client@2.1.0",
     "@modelcontextprotocol/hono": "npm:@modelcontextprotocol/hono@2.0.1",
     "@valibot/to-json-schema": "npm:@valibot/to-json-schema@1.8.0",
     "hono": "npm:hono@4.13.9",
@@ -10,7 +17,7 @@
   "tasks": {
     "start": "deno run --allow-net=127.0.0.1 --allow-env=PORT src/index.ts",
     "check": "deno check src/index.ts tests/ && deno fmt --check && deno lint",
-    "test": "deno test tests/"
+    "test": "deno test --allow-net=127.0.0.1 tests/"
   },
   "fmt": {
     "lineWidth": 100

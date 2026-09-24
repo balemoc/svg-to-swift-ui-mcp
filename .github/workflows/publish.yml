@@ -1,0 +1,25 @@
+name: Publish to JSR
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: denoland/setup-deno@v2.0.5
+        with:
+          deno-version: v2.7.14
+      - name: Verify release tag
+        run: jq -e --arg tag "$GITHUB_REF_NAME" '("v" + .version) == $tag' deno.json
+      - run: deno task check
+      - run: deno task test
+      - run: deno publish --dry-run
+      - run: deno publish
