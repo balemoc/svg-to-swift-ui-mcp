@@ -12,14 +12,16 @@ Install [mise](https://mise.jdx.dev/) and, from the repository root, run:
 
 ```sh
 mise install
+cp .env.example .env
 mise exec -- deno task start
 ```
 
-`mise.toml` pins Deno 2.7.14. On first run, Deno needs access to the npm registry to fill its
-package cache. The server listens at `http://127.0.0.1:8000/mcp` by default. Configure a Streamable
-HTTP MCP client to connect to that URL. Clients using the 2026-07-28 protocol discover the server
-with `server/discover`; older clients can use the legacy `initialize` handshake. Set either `HOST`
-or `PORT` to change the bind address (the omitted value keeps its default):
+`mise.toml` pins Deno 2.7.14. The start task loads the required local `.env` file (ignored by Git);
+edit `PORT` there to change the port. On first run, Deno needs access to the npm registry to fill
+its package cache. The server listens at `http://127.0.0.1:8000/mcp` by default. Configure a
+Streamable HTTP MCP client to connect to that URL. Clients using the 2026-07-28 protocol discover
+the server with `server/discover`; older clients can use the legacy `initialize` handshake. Set
+either `HOST` or `PORT` to change the bind address (the omitted value keeps its default):
 
 ```sh
 HOST=127.0.0.1 PORT=8787 mise exec -- deno task start
