@@ -33,7 +33,7 @@ integer from 1 to 65535.
 Run the JSR package with Deno instead of cloning the repository:
 
 ```sh
-deno run --allow-net --allow-env=HOST,PORT jsr:@balemoc/svg-to-swift-ui-mcp@0.1.0
+deno run --allow-net --allow-env=HOST,PORT jsr:@balemoc/svg-to-swift-ui-mcp@0.1.1
 ```
 
 The endpoint, `HOST`, and `PORT` behavior are the same. Deno must be installed, and the first run
@@ -103,7 +103,7 @@ The package is configured as `@balemoc/svg-to-swift-ui-mcp` in `deno.json`. Befo
 release, create the package in the `@balemoc` scope on JSR and link it to this GitHub repository for
 [OIDC publishing](https://jsr.io/docs/publishing-packages#publishing-from-github-actions). The
 [publish workflow](.github/workflows/publish.yml) runs checks and a publish dry run before
-publishing on a pushed `v*` tag. The tag must match the `deno.json` version (for example, `v0.1.0`).
+publishing on a pushed `v*` tag. The tag must match the `deno.json` version (for example, `v0.1.1`).
 Review locally with `mise exec -- deno publish --dry-run` before tagging.
 
 ## License
